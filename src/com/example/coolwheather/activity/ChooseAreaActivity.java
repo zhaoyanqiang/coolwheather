@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -106,6 +107,7 @@ public class ChooseAreaActivity extends Activity{
 			dataList.clear();
 			for(Province province : provinceList){
 				dataList.add(province.getProvinceName());
+				Log.d("queryProvinces", "province.getProvinceName()::"+province.getProvinceName());
 			}
 			
 			adapter.notifyDataSetChanged();
@@ -167,7 +169,7 @@ public class ChooseAreaActivity extends Activity{
 		if(!TextUtils.isEmpty(code)){
 			address = "http://api.yytianqi.com/weatherindex?city="+code+"&key=9gw31h15aiponwc2";
 		}else {
-			address = "http://www.yytianqi.com/citys/1.html";
+			address = "http://api.yytianqi.com/citylist/id/2";
 		}
 		showProgressDialog();
 		HttpUtil.sendHttpRequest(address, new HttpCallbackListener(){

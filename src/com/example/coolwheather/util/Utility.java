@@ -1,6 +1,11 @@
 package com.example.coolwheather.util;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.coolwheather.model.City;
 import com.example.coolwheather.model.CoolWheatherDB;
@@ -13,21 +18,46 @@ public class Utility {
 	*/
 	public synchronized static boolean handleProvincesResponse(CoolWheatherDB coolWeatherDB, String response) {
 		if (!TextUtils.isEmpty(response)) {
-			String[] allProvinces = response.split(",");
-			if (allProvinces != null && allProvinces.length > 0) {
-				for (String p : allProvinces) {
-					String[] array = p.split("\\|");
-					Province province = new Province();
-					province.setProvinceCode(array[0]);
-					province.setProvinceName(array[1]);
-					// 将解析出来的数据存储到Province表
-					coolWeatherDB.saveProvince(province);
-				}
-				return true;
-			}
+			
+			
+			parseJSONWithJSONObject(coolWeatherDB,response);
+			return true;
 		}
 		
 		return false;
+	}
+	
+	private static void parseJSONWithJSONObject(CoolWheatherDB coolWeatherDB,String jsonData){
+		
+		try {
+			Log.d("Utility", "json is " + jsonData);
+
+				//JSONArray jsonArray = new JSONArray(jsonData);
+				
+			    JSONObject jsonObject2 =new JSONObject(jsonData);
+			    
+			    JSONArray jsonArray = jsonObject2.getJSONArray("list");
+			    for (int i = 0; i < jsonArray.length(); i++) {
+			    	JSONObject jsonObject = jsonArray.getJSONObject(i);
+			    	String id = jsonObject.getString("city_id");
+			    	String name = jsonObject.getString("name");
+			    	Log.d("Utility", "id is " + id);
+			    	Log.d("Utility", "name is " + name);
+
+			    	Province province = new Province();
+			    	province.setProvinceCode(id);
+			    	province.setProvinceName(name);
+			    	// 将解析出来的数据存储到Province表
+			    	coolWeatherDB.saveProvince(province);
+
+			    }
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 	/**
 	* 解析和处理服务器返回的市级数据
