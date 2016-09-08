@@ -19,8 +19,8 @@ public class Utility {
 	public synchronized static boolean handleProvincesResponse(CoolWheatherDB coolWeatherDB, String response) {
 		if (!TextUtils.isEmpty(response)) {
 			
-			
 			parseJSONWithJSONObject(coolWeatherDB,response);
+
 			return true;
 		}
 		
@@ -30,30 +30,79 @@ public class Utility {
 	private static void parseJSONWithJSONObject(CoolWheatherDB coolWeatherDB,String jsonData){
 		
 		try {
-			Log.d("Utility", "json is " + jsonData);
 
 				//JSONArray jsonArray = new JSONArray(jsonData);
 				
-			    JSONObject jsonObject2 =new JSONObject(jsonData);
+			    JSONObject jsonObject =new JSONObject(jsonData);
 			    
-			    JSONArray jsonArray = jsonObject2.getJSONArray("list");
-			    for (int i = 0; i < jsonArray.length(); i++) {
-			    	JSONObject jsonObject = jsonArray.getJSONObject(i);
-			    	String id = jsonObject.getString("city_id");
-			    	String name = jsonObject.getString("name");
-			    	Log.d("Utility", "id is " + id);
-			    	Log.d("Utility", "name is " + name);
+			    JSONArray jsonArrayProvince = jsonObject.getJSONArray("list");
+			    for (int i = 0; i < jsonArrayProvince.length(); i++) {
+			    	JSONObject jsonObjectProvince = jsonArrayProvince.getJSONObject(i);
+			    	String provinceid = jsonObjectProvince.getString("city_id");
+			    	String provincename = jsonObjectProvince.getString("name");
+			    	JSONArray jsonArrayCity = jsonObjectProvince.getJSONArray("list");
+			    	for(int j = 0; j<jsonArrayCity.length(); j++){
+				    	JSONObject jsonObjectCity = jsonArrayCity.getJSONObject(j);
+				    	String cityid = jsonObjectCity.getString("city_id");
+				    	String cityname = jsonObjectCity.getString("name");
+    	
+				    	if(jsonObjectCity.has("list"))
+				    	{
+
+					    	JSONArray jsonArrayCounty = jsonObjectCity.getJSONArray("list");
+					    	
+					    	for(int k = 0; k<jsonArrayCounty.length(); k++){
+						    	JSONObject jsonObjectCounty = jsonArrayCounty.getJSONObject(k);
+						    	String countyid = jsonObjectCounty.getString("city_id");
+						    	String countyname = jsonObjectCounty.getString("name");
+						    	County county = new County();
+						    	county.setCityId(i*100+j+1);
+						    	county.setCountyCode(countyid);
+						    	county.setCountyName(countyname);
+						    	county.setId(k+1);
+						    	
+						    	Log.e("Utility", "cityid :"+(j+1));
+						    	Log.e("Utility", "countyname :"+countyname);
+
+
+						    	coolWeatherDB.saveCounty(county);
+					    	}
+
+				    	}
+
+
+				    	
+				    	
+
+				    	
+				    	Log.v("Utility", "cityid is " + cityid);
+				    	Log.v("Utility", "cityname is " + cityname);
+				    	City city = new City();
+						city.setCityCode(cityid);
+						city.setCityName(cityname);
+						city.setProvinceId(i+1);
+						city.setId(i*100+j+1);
+						//写入数据库
+						coolWeatherDB.saveCity(city);
+			    		
+			    	}
+			    	Log.v("Utility", "id is " + provinceid);
+			    	Log.v("Utility", "name is " + provincename);
 
 			    	Province province = new Province();
-			    	province.setProvinceCode(id);
-			    	province.setProvinceName(name);
+			    	province.setProvinceCode(provinceid);
+			    	province.setProvinceName(provincename);
+			    	province.setId(i+1);
 			    	// 将解析出来的数据存储到Province表
 			    	coolWeatherDB.saveProvince(province);
+			    	Log.e("Utility", "saveProvince");
 
 			    }
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
+	    	Log.e("Utility", "JSONException");
+
 			e.printStackTrace();
 		}
 		

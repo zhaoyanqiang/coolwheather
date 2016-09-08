@@ -137,7 +137,7 @@ public class ChooseAreaActivity extends Activity{
 			titleText.setText(selectedProvince.getProvinceName());
 			currentLevel = LEVEL_CITY;
 			} else {
-				queryFromServer(selectedProvince.getProvinceCode(), "city");
+				queryFromServer(null, "city");
 			}
 	}
 	
@@ -156,7 +156,7 @@ public class ChooseAreaActivity extends Activity{
 			titleText.setText(selectedCity.getCityName());
 			currentLevel = LEVEL_COUNTY;
 		} else {
-			queryFromServer(selectedCity.getCityCode(), "county");
+			queryFromServer(null, "county");
 		}
 	}
 	
@@ -178,13 +178,7 @@ public class ChooseAreaActivity extends Activity{
 			public void onFinish(String response) {
 				// TODO Auto-generated method stub
 				boolean result = false;
-				if ("province".equals(type)) {
-					result = Utility.handleProvincesResponse(coolWeatherDB,response);
-				} else if ("city".equals(type)) {
-					result = Utility.handleCitiesResponse(coolWeatherDB,response, selectedProvince.getId());
-				} else if ("county".equals(type)) {
-					result = Utility.handleCountiesResponse(coolWeatherDB,response, selectedCity.getId());
-				}
+				result = Utility.handleProvincesResponse(coolWeatherDB,response);
 				if(result){
 					runOnUiThread( new Runnable() {
 						public void run() {
