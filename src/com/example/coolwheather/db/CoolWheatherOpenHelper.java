@@ -21,7 +21,7 @@ public class CoolWheatherOpenHelper  extends SQLiteOpenHelper{
 	+ "id integer primary key autoincrement, "
 	+ "city_name text, "
 	+ "city_code text, "
-	+ "province_id integer)";
+	+ "province_id text)";
 	
 	/**
 	* County±ÌΩ®±Ì”Ôæ‰
@@ -30,7 +30,7 @@ public class CoolWheatherOpenHelper  extends SQLiteOpenHelper{
 	+ "id integer primary key autoincrement, "
 	+ "county_name text, "
 	+ "county_code text, "
-	+ "city_id integer)";
+	+ "city_id text)";
 	
 	public  CoolWheatherOpenHelper(Context context, String name,CursorFactory factory, int version) {
 		super(context, name, factory, version);

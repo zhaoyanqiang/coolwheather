@@ -83,6 +83,7 @@ public class ChooseAreaActivity extends Activity{
 					long arg3) {
 				// TODO Auto-generated method stub
 				if (currentLevel == LEVEL_PROVINCE) {
+					Log.e("onItemClick::", "index::"+index);
 					selectedProvince = provinceList.get(index);
 					queryCities();
 					
@@ -107,7 +108,6 @@ public class ChooseAreaActivity extends Activity{
 			dataList.clear();
 			for(Province province : provinceList){
 				dataList.add(province.getProvinceName());
-				Log.d("queryProvinces", "province.getProvinceName()::"+province.getProvinceName());
 			}
 			
 			adapter.notifyDataSetChanged();
@@ -126,7 +126,9 @@ public class ChooseAreaActivity extends Activity{
 	* 查询选中省内所有的市，优先从数据库查询，如果没有查询到再去服务器上查询。
 	*/
 	private void queryCities() {
-		cityList = coolWeatherDB.loadCities(selectedProvince.getId());
+		
+		Log.e("queryCities", "selectedProvince.getId()::"+selectedProvince.getId());
+		cityList = coolWeatherDB.loadCities(selectedProvince.getProvinceCode());
 		if (cityList.size() > 0) {
 			dataList.clear();
 			for (City city : cityList) {
@@ -145,7 +147,7 @@ public class ChooseAreaActivity extends Activity{
 	* 查询选中市内所有的县，优先从数据库查询，如果没有查询到再去服务器上查询。
 	*/
 	private void queryCounties() {
-		countyList = coolWeatherDB.loadCounties(selectedCity.getId());
+		countyList = coolWeatherDB.loadCounties(selectedCity.getCityCode());
 		if (countyList.size() > 0) {
 			dataList.clear();
 			for (County county : countyList) {
@@ -167,7 +169,7 @@ public class ChooseAreaActivity extends Activity{
 		
 		String address;
 		if(!TextUtils.isEmpty(code)){
-			address = "http://api.yytianqi.com/weatherindex?city="+code+"&key=9gw31h15aiponwc2";
+			address = "http://api.yytianqi.com/observe?city="+code+"&key=9gw31h15aiponwc2";
 		}else {
 			address = "http://api.yytianqi.com/citylist/id/2";
 		}
@@ -239,7 +241,6 @@ public class ChooseAreaActivity extends Activity{
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
-		super.onBackPressed();
 		if (currentLevel == LEVEL_COUNTY) {
 			queryCities();
 		} else if (currentLevel == LEVEL_CITY) {

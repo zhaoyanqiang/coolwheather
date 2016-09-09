@@ -56,32 +56,18 @@ public class Utility {
 						    	String countyid = jsonObjectCounty.getString("city_id");
 						    	String countyname = jsonObjectCounty.getString("name");
 						    	County county = new County();
-						    	county.setCityId(i*100+j+1);
 						    	county.setCountyCode(countyid);
 						    	county.setCountyName(countyname);
-						    	county.setId(k+1);
-						    	
-						    	Log.e("Utility", "cityid :"+(j+1));
-						    	Log.e("Utility", "countyname :"+countyname);
-
-
+						    	county.setCityId(cityid);
 						    	coolWeatherDB.saveCounty(county);
 					    	}
 
 				    	}
 
-
-				    	
-				    	
-
-				    	
-				    	Log.v("Utility", "cityid is " + cityid);
-				    	Log.v("Utility", "cityname is " + cityname);
 				    	City city = new City();
 						city.setCityCode(cityid);
 						city.setCityName(cityname);
-						city.setProvinceId(i+1);
-						city.setId(i*100+j+1);
+						city.setProvinceId(provinceid);
 						//写入数据库
 						coolWeatherDB.saveCity(city);
 			    		
@@ -92,7 +78,7 @@ public class Utility {
 			    	Province province = new Province();
 			    	province.setProvinceCode(provinceid);
 			    	province.setProvinceName(provincename);
-			    	province.setId(i+1);
+			    	province.setId(i);
 			    	// 将解析出来的数据存储到Province表
 			    	coolWeatherDB.saveProvince(province);
 			    	Log.e("Utility", "saveProvince");
@@ -136,7 +122,7 @@ public class Utility {
 	/**
 	* 解析和处理服务器返回的县级数据
 	*/
-	public static boolean handleCountiesResponse(CoolWheatherDB coolWeatherDB,String response, int cityId) {
+	public static boolean handleCountiesResponse(CoolWheatherDB coolWeatherDB,String response, String cityId) {
 		if (!TextUtils.isEmpty(response)) {
 			String[] allCounties = response.split(",");
 			if (allCounties != null && allCounties.length > 0) {

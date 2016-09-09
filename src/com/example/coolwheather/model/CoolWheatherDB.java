@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.coolwheather.db.CoolWheatherOpenHelper;
 
@@ -86,9 +87,9 @@ public class CoolWheatherDB {
 	/**
 	* 从数据库读取从数据库读取某省下所有的城市信息。
 	*/
-	public List<City> loadCities(int provinceId){
+	public List<City> loadCities(String provinceId){
 		List<City> list = new ArrayList<City>();
-		Cursor cursor = db.query("City", null, "province_id = ?",new String[] { String.valueOf(provinceId) }, null, null, null);
+		Cursor cursor = db.query("City", null, "province_id = ?",new String[] {provinceId }, null, null, null);
 		if(cursor.moveToFirst()){
 			do{
 				City city = new City();
@@ -118,7 +119,7 @@ public class CoolWheatherDB {
 	/**
 	* 从数据库读取某城市下所有的县信息。
 	*/
-	public List<County> loadCounties(int cityId){
+	public List<County> loadCounties(String cityId){
 		List<County> list = new ArrayList<County>();		
 		Cursor cursor = db.query("County", null, "city_id = ?",new String[] { String.valueOf(cityId) }, null, null, null);
 		if(cursor.moveToFirst()){
